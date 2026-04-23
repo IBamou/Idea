@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'in_progress ', 'rejected'])->default('pending');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('image_url', 255)->nullable();
             $table->timestamps();
         });

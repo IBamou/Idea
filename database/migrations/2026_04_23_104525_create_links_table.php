@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->id();
-            $table->string('link', 255)->unique();
+            $table->string('url', 255)->unique();
             $table->foreignId('idea_id')->constrained('ideas')->onDelete('cascade');
             $table->timestamps();
         });
