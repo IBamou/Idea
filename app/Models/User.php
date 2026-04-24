@@ -30,10 +30,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function __construct(array $attributes = [])
+    {
+        return parent::__construct($attributes);
+    }
     public function ideas(): HasMany
     {
         return $this->hasMany(Idea::class);
     }
+
+    
 
 
 }

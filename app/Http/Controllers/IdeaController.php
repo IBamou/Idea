@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Idea;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IdeaController extends Controller
 {
@@ -12,7 +14,9 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $ideas = $user->ideas;
+        return view('ideas.index', compact('ideas'));
     }
 
     /**
@@ -20,15 +24,22 @@ class IdeaController extends Controller
      */
     public function create()
     {
-        //
+        return view('ideas.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        $validation = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        $user = $user->findOrFail(Auth::id());
+        $user->ideas()->create($validation);
+        return redirect()->route('ideas.index');
     }
 
     /**
@@ -36,7 +47,7 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        //
+        return view('ideas.show', compact('idea'));
     }
 
     /**
@@ -44,7 +55,7 @@ class IdeaController extends Controller
      */
     public function edit(Idea $idea)
     {
-        //
+        return view('ideas.edit', compact('idea'));
     }
 
     /**
@@ -52,7 +63,13 @@ class IdeaController extends Controller
      */
     public function update(Request $request, Idea $idea)
     {
-        //
+        $validation = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        $idea->update($validation);
+        return redirect()->route('ideas.show', $idea);
     }
 
     /**
@@ -60,6 +77,7 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
-        //
+        $idea->delete();
+        return redirect()->route('ideas.index');
     }
 }
